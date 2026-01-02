@@ -1,4 +1,4 @@
-data "azurerm_client_config" "current" {}
+# sql.tf - REMOVED the data "azurerm_client_config" "current" {} line
 
 resource "azurerm_mssql_server" "sql" {
   name                = "sql-quote-${random_id.rand.hex}"
@@ -6,7 +6,7 @@ resource "azurerm_mssql_server" "sql" {
   location            = azurerm_resource_group.rg.location
   version             = "12.0"
 
-  # Temporary SQL admin (will be removed later)
+  # SQL admin credentials from Key Vault (randomly generated)
   administrator_login          = "sqladminuser"
   administrator_login_password = azurerm_key_vault_secret.sql_admin_password.value
 
@@ -14,6 +14,7 @@ resource "azurerm_mssql_server" "sql" {
   public_network_access_enabled = false
 
   # Azure AD Admin (required for Managed Identity auth)
+  # Now references the data block from keyvault.tf
   azuread_administrator {
     login_username = "aad-sql-admin"
     object_id      = data.azurerm_client_config.current.object_id
@@ -41,4 +42,3 @@ resource "azurerm_mssql_database" "db" {
     read   = "10m"
   }
 }
-
