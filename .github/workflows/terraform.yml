@@ -41,3 +41,8 @@ jobs:
 
       - name: Terraform Plan
         run: terraform plan
+        
+      - name: Verify OIDC context
+        run: |
+          echo "ARM_USE_OIDC=$ARM_USE_OIDC"
+          echo "OIDC token file: $ACTIONS_ID_TOKEN_REQUEST_URL"
