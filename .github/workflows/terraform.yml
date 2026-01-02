@@ -9,7 +9,6 @@ on:
   workflow_dispatch: {}    
 
 permissions:
-  id-token: write
   contents: read
 
 jobs:
@@ -20,71 +19,80 @@ jobs:
       run:
         working-directory: Infra/terraform
 
-    # ADD THESE ENVIRONMENT VARIABLES
+    # CRITICAL: Set these environment variables
     env:
-      ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
-      ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-      ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
-      ARM_USE_AZUREAD: true
-      ARM_USE_MSI: false
+      ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+      ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+      ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
 
     steps:
     - name: Checkout repo
       uses: actions/checkout@v4
-
-    - name: Azure Login (OIDC)
-      uses: azure/login@v2
-      with:
-        client-id: ${{ secrets.AZURE_CLIENT_ID }}
-        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v3
       with:
         terraform_version: 1.7.5
 
-    - name: Verify and Fix backend.tf
+    - name: Create or Update provider configuration
       run: |
-        echo "=== Current backend.tf ==="
-        cat backend.tf
-        echo ""
+        echo "=== Creating explicit provider configuration ==="
         
-        # Ensure use_azuread_auth is set to true
-        if ! grep -q "use_azuread_auth.*=.*true" backend.tf; then
-          echo "Fixing backend.tf - adding use_azuread_auth = true"
-          sed -i '/backend "azurerm" {/,/}/ s/}/  use_azuread_auth = true\n}/' backend.tf
-        fi
+        # Create providers.tf with explicit Service Principal config
+        cat > providers.tf << EOF
+terraform {
+  required_version = ">= 1.5.0"
+  
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = "~> 4.0"
+    }
+  }
+  
+  backend "azurerm" {
+    resource_group_name  = "rg-tfstate-prod"
+    storage_account_name = "tfstatequote525"
+    container_name       = "tfstate"
+    key                  = "quote-app/production.tfstate"
+  }
+}
+
+# Explicit Service Principal configuration
+provider "azurerm" {
+  features {}
+  
+  # Service Principal authentication
+  client_id       = "${{ secrets.ARM_CLIENT_ID }}"
+  client_secret   = "${{ secrets.ARM_CLIENT_SECRET }}"
+  tenant_id       = "${{ secrets.ARM_TENANT_ID }}"
+  subscription_id = "${{ secrets.ARM_SUBSCRIPTION_ID }}"
+  
+  # Disable Azure CLI auth fallback
+  skip_provider_registration = false
+  use_msi                    = false
+  use_azuread_auth           = false
+}
+EOF
         
-        # Ensure subscription_id is set
-        if ! grep -q "subscription_id" backend.tf; then
-          echo "Adding subscription_id"
-          sed -i '/backend "azurerm" {/,/}/ s/}/  subscription_id = "74c4f319-b9f6-4b4f-b910-b6bb2923cf97"\n}/' backend.tf
-        fi
-        
-        echo ""
-        echo "=== Updated backend.tf ==="
-        cat backend.tf
+        echo "=== Created providers.tf ==="
+        cat providers.tf
 
     - name: Clean Terraform cache
       run: |
+        echo "Cleaning Terraform cache..."
         rm -rf .terraform .terraform.lock.hcl terraform.tfstate 2>/dev/null || true
 
-    - name: Terraform Init with explicit config
-      run: |
-        terraform init \
-          -backend-config="resource_group_name=rg-tfstate-prod" \
-          -backend-config="storage_account_name=tfstatequote525" \
-          -backend-config="container_name=tfstate" \
-          -backend-config="key=quote-app/production.tfstate" \
-          -backend-config="use_azuread_auth=true" \
-          -backend-config="subscription_id=74c4f319-b9f6-4b4f-b910-b6bb2923cf97"
+    - name: Terraform Init
+      run: terraform init -input=false
 
     - name: Terraform Validate
       run: terraform validate
 
     - name: Terraform Plan
-      run: terraform plan
+      run: terraform plan -input=false
 
-#    - name: Terraform Apply
-#      run: terraform apply -auto-approve
+    - name: Terraform Apply
+      if: github.ref == 'refs/heads/main'
+      run: terraform apply -auto-approve -input=false
