@@ -99,10 +99,10 @@ resource "azurerm_application_gateway" "appgw" {
 
   ssl_certificate {
     name     = "appgw-cert"
-    data     = filebase64("C:/Users/arunagim/Desktop/cloudapp.pfx")
-    password = azurerm_key_vault_secret.appgw_cert_password.value
+    key_vault_secret_id = azurerm_key_vault_certificate.appgw.secret_id
   }
 
 }
+
 
 
