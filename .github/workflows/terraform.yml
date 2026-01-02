@@ -23,26 +23,14 @@ jobs:
     - name: Checkout repo
       uses: actions/checkout@v4
 
-    - name: Display Configuration
-      run: |
-        echo "=== Your Configuration Files ==="
-        echo "1. backend.tf:"
-        cat backend.tf
-        echo ""
-        echo "2. providers.tf:"
-        cat providers.tf
-        echo ""
-        echo "3. Environment Variables:"
-        echo "   ARM_CLIENT_ID: ${ARM_CLIENT_ID:0:10}..."
-        echo "   ARM_CLIENT_SECRET: ${ARM_CLIENT_SECRET:0:10}..."
-        echo "   ARM_TENANT_ID: ${ARM_TENANT_ID}"
-        echo "   ARM_SUBSCRIPTION_ID: ${ARM_SUBSCRIPTION_ID}"
+    - name: Terraform Init
+      run: terraform init
 
-    - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v3
+    - name: Terraform Validate
+      run: terraform validate
 
-    - name: Test Terraform Init
-      run: |
-        echo "=== Testing terraform init ==="
-        rm -rf .terraform .terraform.lock.hcl 2>/dev/null || true
-        terraform init -input=false
+    - name: Terraform Plan
+      run: terraform plan
+
+#    - name: Terraform Apply
+#      run: terraform apply -auto-approve
