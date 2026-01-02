@@ -1,9 +1,15 @@
 name: Debug Terraform
 
-on: [workflow_dispatch]
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "Infra/terraform/**"
 
 permissions:
   contents: read
+  id-token: write
 
 jobs:
   debug:
@@ -12,10 +18,10 @@ jobs:
     defaults:
       run:
         working-directory: Infra/terraform
-
+        
     env:
       ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
-      ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+      #ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
       ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
       ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
 
