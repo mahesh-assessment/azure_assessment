@@ -74,39 +74,6 @@ resource "azurerm_key_vault" "local_for_aks" {
 }
 
 ############################################
-# External lookup for GitHub SP Object ID
-############################################
-data "external" "github_sp_object_id" {
-  program = [
-    "bash",
-    "-c",
-    <<EOF
-OBJECT_ID=$(az ad sp show --id "${var.github_sp_client_id}" --query id -o tsv 2>/dev/null || echo "")
-echo "{\"object_id\": \"$OBJECT_ID\"}"
-EOF
-  ]
-
-  query = {
-    client_id = var.github_sp_client_id
-  }
-}
-
-############################################
-# Grant GitHub Actions access to Key Vault
-############################################
-resource "azurerm_key_vault_access_policy" "github_actions" {
-  key_vault_id = data.azurerm_key_vault.secrets.id
-
-  tenant_id = data.azurerm_client_config.current.tenant_id
-  object_id = data.external.github_sp_object_id.result.object_id
-
-  secret_permissions = [
-    "Get",
-    "List"
-  ]
-}
-
-############################################
 # Copy SQL password to local Key Vault
 ############################################
 resource "azurerm_key_vault_secret" "local_sql_password" {
