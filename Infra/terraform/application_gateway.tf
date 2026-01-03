@@ -1,8 +1,8 @@
 ### application_gateway.tf file
 resource "azurerm_web_application_firewall_policy" "waf_policy" {
   name                = "wafpolicy-appgw"
-  resource_group_name = var.resource_group_name
-  location            = var.location
+  resource_group_name = azurerm_resource_group.rg.name
+  location            = azurerm_resource_group.rg.location
 
   managed_rules {
     managed_rule_set {
@@ -22,8 +22,8 @@ resource "azurerm_web_application_firewall_policy" "waf_policy" {
 
 resource "azurerm_application_gateway" "appgw" {
   name                = "appgw-prod"
-  resource_group_name = var.resource_group_name
-  location            = var.location
+  resource_group_name = azurerm_resource_group.rg.name
+  location            = azurerm_resource_group.rg.location
 
   sku {
     name     = "WAF_v2"

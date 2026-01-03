@@ -1,7 +1,7 @@
 resource "azurerm_public_ip" "appgw_pip" {
   name                = "pip-appgw"
-  resource_group_name = var.resource_group_name
-  location            = var.location
+  resource_group_name = azurerm_resource_group.rg.name
+  location            = azurerm_resource_group.rg.location
 
   allocation_method = "Static"
   sku               = "Standard"
