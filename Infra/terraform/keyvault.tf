@@ -3,8 +3,8 @@ data "azurerm_client_config" "current" {}
 
 # Reference the EXISTING Key Vault in rg-tfstate-prod
 data "azurerm_key_vault" "secrets" {
-  name                = "kv-quote-app"            # Your Key Vault name
-  resource_group_name = "rg-tfstate-prod"         # Different resource group
+  name                = "kv-quote-app-vault"            # Your Key Vault name
+  resource_group_name = "rg-tfstate-vault"         # Different resource group
 }
 
 # Read secrets from the existing Key Vault
