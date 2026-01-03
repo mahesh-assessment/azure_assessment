@@ -4,92 +4,61 @@ on:
   pull_request:
     paths:
       - "Infra/terraform/**"
-
   push:
     branches:
       - main
     paths:
       - "Infra/terraform/**"
-
   workflow_dispatch: {}
 
 permissions:
-  contents: read
-  id-token: write   # REQUIRED for Azure OIDC
+  id-token: write   # REQUIRED for OIDC
+  contents: read    # REQUIRED to checkout code
 
 jobs:
   terraform:
     name: Terraform Plan / Apply
     runs-on: ubuntu-latest
-    environment: prod
     timeout-minutes: 30 
 
     defaults:
       run:
         working-directory: Infra/terraform
 
-    env:
-      ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
-      ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
-      ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
-      ARM_USE_OIDC: true
-      TF_IN_AUTOMATION: true
-
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v4
+
+      # ---- AZURE LOGIN (OIDC) ----
+      - name: Azure Login with OIDC
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          # Environment is optional but can help with matching federated credentials
+          environment: 'AzureCloud'
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: 1.6.6
 
-      # ---- AUTH VERIFICATION (OIDC) ----
-      - name: Verify OIDC Context
-        run: |
-          echo "ARM_USE_OIDC=$ARM_USE_OIDC"
-          echo "OIDC URL=$ACTIONS_ID_TOKEN_REQUEST_URL"
-          echo "OIDC AUD=$ACTIONS_ID_TOKEN_REQUEST_TOKEN"
-          echo "Environment: ${{ vars.ENVIRONMENT_NAME || 'not set' }}"
-          echo "Job environment: ${{ job.environment || 'not set' }}"
-
-      - name: Debug OIDC Token Claims
-        run: |
-          echo "=== Debug OIDC Token ==="
-          echo "OIDC URL: $ACTIONS_ID_TOKEN_REQUEST_URL"
-    
-          # Request token with Azure audience
-          TOKEN_RESPONSE=$(curl -s -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=api://AzureADTokenExchange")
-    
-          echo "Token Response:"
-          echo "$TOKEN_RESPONSE" | jq .
-    
-          # Extract and decode JWT payload
-          TOKEN=$(echo "$TOKEN_RESPONSE" | jq -r '.value')
-          if [ "$TOKEN" != "null" ]; then
-            echo "=== Decoded Token Payload ==="
-            echo $TOKEN | cut -d '.' -f 2 | base64 -d 2>/dev/null | jq .
-          else
-            echo "ERROR: No token received"
-          fi
-        env:
-          ACTIONS_ID_TOKEN_REQUEST_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       # ---- INIT ----
       - name: Terraform Init
         run: terraform init -input=false
-        #run: terraform init -input=false -upgrade -no-color -lock=false -get-plugins=true -verbose
+        # NO ARM_USE_OIDC needed - Azure CLI context is used automatically
 
       # ---- VALIDATE ----
       - name: Terraform Validate
         run: terraform validate
 
-      # ---- PLAN (PR + non-main) ----
+      # ---- PLAN (PR) ----
       - name: Terraform Plan
         if: github.event_name == 'pull_request'
         run: terraform plan -input=false
 
-      # ---- APPLY (ONLY MERGE TO MAIN) ----
-      #- name: Terraform Apply
-      #  if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-      #  run: terraform apply -auto-approve -input=false
+      # ---- APPLY (MAIN BRANCH) ----
+      - name: Terraform Apply
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: terraform apply -auto-approve -input=false
