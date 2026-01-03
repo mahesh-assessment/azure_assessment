@@ -9,55 +9,70 @@ on:
       - main
     paths:
       - "Infra/terraform/**"
-  workflow_dispatch: {}
+  workflow_dispatch:
 
 permissions:
-  id-token: write   # REQUIRED for OIDC
+  id-token: write   # REQUIRED for Azure OIDC
   contents: read    # REQUIRED to checkout code
 
 jobs:
   terraform:
     name: Terraform Plan / Apply
     runs-on: ubuntu-latest
-    environment: pr-workflow 
-    timeout-minutes: 30 
+    timeout-minutes: 30
+    environment: pr-workflow
 
     defaults:
       run:
         working-directory: Infra/terraform
 
     steps:
+      # -----------------------------
+      # Checkout
+      # -----------------------------
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # ---- AZURE LOGIN (OIDC) ----
-      - name: Azure Login with OIDC
+      # -----------------------------
+      # Azure Login (OIDC)
+      # -----------------------------
+      - name: Azure Login (OIDC)
         uses: azure/login@v1
         with:
-          client-id: ${{ secrets.ARM_CLIENT_ID }}
-          tenant-id: ${{ secrets.ARM_TENANT_ID }}
-          subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
+      # -----------------------------
+      # Terraform Setup
+      # -----------------------------
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: 1.6.6
 
-      # ---- INIT ----
+      # -----------------------------
+      # Terraform Init
+      # -----------------------------
       - name: Terraform Init
         run: terraform init -input=false
-        # NO ARM_USE_OIDC needed - Azure CLI context is used automatically
 
-      # ---- VALIDATE ----
+      # -----------------------------
+      # Terraform Validate
+      # -----------------------------
       - name: Terraform Validate
         run: terraform validate
 
-      # ---- PLAN (PR) ----
+      # -----------------------------
+      # Terraform Plan (PR only)
+      # -----------------------------
       - name: Terraform Plan
         if: github.event_name == 'pull_request'
         run: terraform plan -input=false
 
-      # ---- APPLY (MAIN BRANCH) ----
-      - name: Terraform Apply
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        run: terraform apply -auto-approve -input=false
+      # -----------------------------
+      # Terraform Apply (main only)
+      # -----------------------------
+     # - name: Terraform Apply
+     #   if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+     #   run: terraform apply -auto-approve -input=false
