@@ -19,4 +19,27 @@ variable "create_local_key_vault" {
 }
 
 
+# variables.tf - Add HA-specific variables
+variable "ha_enabled" {
+  description = "Enable high availability features"
+  type        = bool
+  default     = true
+}
 
+variable "aks_node_count" {
+  description = "Number of AKS nodes for HA"
+  type        = number
+  default     = 3
+}
+
+variable "agw_min_capacity" {
+  description = "Minimum AGW capacity for HA"
+  type        = number
+  default     = 2
+}
+
+variable "agw_max_capacity" {
+  description = "Maximum AGW capacity for auto-scaling"
+  type        = number
+  default     = 10
+}
