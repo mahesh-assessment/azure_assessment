@@ -4,9 +4,7 @@ on:
   push:
     branches: [main]
     paths:
-      - 'App/quote-app/src/**'
-      - 'App/quote-app/docker/**'
-      - 'App/quote-app/requirements.txt'
+      - 'App/quote-app/**'
   workflow_dispatch:
 
 permissions:
