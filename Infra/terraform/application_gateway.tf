@@ -59,7 +59,7 @@ resource "azurerm_application_gateway" "appgw" {
 
   backend_address_pool {
     name         = "aks-ilb-backend"
-    ip_addresses = ["10.224.0.6"]
+    ip_addresses = ["10.10.1.5"]
   }
 
   backend_http_settings {
