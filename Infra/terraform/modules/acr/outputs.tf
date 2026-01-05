@@ -7,3 +7,8 @@ output "login_server" {
   value       = azurerm_container_registry.acr.login_server
   description = "ACR login server"
 }
+
+output "name" {
+  value       = azurerm_container_registry.acr.name
+  description = "ACR name"
+}
