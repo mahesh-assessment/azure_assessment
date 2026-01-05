@@ -7,7 +7,6 @@
 **LinkedIn**: www.linkedin.com/in/maheshwaran-arunagiri-28b1a6251
 
 
-
 **Core Achievement**: Successfully designed and deployed a production-ready quote web application on Azure with enterprise-grade security, high availability, and automated CI/CD pipelines.
 
 
@@ -195,14 +194,22 @@ graph TD
    - Merge → `terraform apply` (deploys to Azure)
 
 2. **Application Pipeline** (`/app/` folder):
-
+       
+    - Merge -> Quote image is built and uploaded to ACR 
     - ArgoCD monitors Git repository
     - Auto-sync if the /app folder data is updated
     - Health checks prevent bad deployments
     - Rollback capability via Git history
     - Drift detection ensures cluster matches Git state
 
-Conclusion
+
+
+### Application URL's
+
+Quote web app - https://quoteapp.centralindia.cloudapp.azure.com/quote
+Argocd        - https://quoteapp.centralindia.cloudapp.azure.com/argocd
+
+### Conclusion
 
 This solution demonstrates production-ready cloud architecture with:
 
