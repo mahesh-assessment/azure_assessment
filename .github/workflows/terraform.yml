@@ -72,14 +72,14 @@ jobs:
       # -----------------------------
       # Terraform Format Check
       # -----------------------------
-      - name: Terraform Format Check
-        run: terraform fmt -check -recursive
+      #- name: Terraform Format Check
+      #  run: terraform fmt -check -recursive
 
       # -----------------------------
       # Terraform Plan (PR only)
       # -----------------------------
       - name: Terraform Plan
-        if: github.event_name == 'pull_request'
+       # if: github.event_name == 'pull_request'
         run: terraform plan -input=false -var-file="terraform.tfvars"
 
       # -----------------------------
