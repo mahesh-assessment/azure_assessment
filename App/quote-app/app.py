@@ -77,10 +77,6 @@ def get_db_connection():
             token_bytes
         )
 
-        # CRITICAL FIXES APPLIED:
-        # 1. TrustServerCertificate=yes for private endpoint SSL mismatch
-        # 2. Proper connection timeout
-        # 3. Encrypt=yes for security
         conn_str = (
             "DRIVER={ODBC Driver 18 for SQL Server};"
             f"SERVER=tcp:{server},1433;"
@@ -382,5 +378,5 @@ if __name__ == "__main__":
         host="0.0.0.0",
         port=port,
         debug=debug_mode,
-        threaded=True  # Better for production
+        threaded=True 
     )
