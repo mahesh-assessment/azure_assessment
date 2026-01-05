@@ -14,7 +14,7 @@ graph TB
     classDef azure fill:#bbdefb,stroke:#0d47a1,stroke-width:2px
     
     %% Internet Layer
-    INTERNET[Internet Users]:::internet
+    INTERNET[External Users]:::internet
     
     %% Application Gateway Layer
     AGW[Application Gateway<br/>WAF_v2<br/>Public IP: XX.XX.XX.XX]:::agw
@@ -106,9 +106,9 @@ graph TD
     %% Two Separate CI/CD Pipelines
     subgraph "Pipeline 1: Infrastructure CI/CD"
         PR_INFRA[Infra PR Created]:::terraform
-        PLAN_ONLY[Terraform Plan<br/>✅ Dry-run only]:::terraform
+        PLAN_ONLY[Terraform Plan<br/> Dry-run only]:::terraform
         APPROVE_INFRA[Approve & Merge]:::terraform
-        TF_APPLY[Terraform Apply<br/>🚀 Updates Azure Cloud]:::terraform
+        TF_APPLY[Terraform Apply<br/> Updates Azure Cloud]:::terraform
     end
     
     subgraph "Pipeline 2: Application CI/CD"
@@ -132,7 +132,7 @@ graph TD
     ARGOCD_SYNC[Auto-Sync to AKS]:::argocd
     
     %% Production
-    PROD_APP[🚀 Production App Running]:::azure
+    PROD_APP[ Production App Running]:::azure
     
     %% Infrastructure Flow
     DEV -->|1. Modify terraform/| INFRA_CODE
@@ -171,5 +171,5 @@ graph TD
    - Merge → Push to ACR → Update Helm → ArgoCD auto-deploys
 
 **One-Line Summary:** Code → PR → Review → Merge → Auto-deploy to production
-- ✅ High availability with multiple pods
+-  High availability with multiple pods
 ```
