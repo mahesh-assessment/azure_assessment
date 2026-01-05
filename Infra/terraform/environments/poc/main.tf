@@ -16,7 +16,7 @@ terraform {
     resource_group_name  = "rg-tfstate-vault"
     storage_account_name = "tfstatequote525"
     container_name       = "tfstate"
-    key                  = "quote-app/production.terraform.tfstate"
+    key                  = "quote-app/poc.terraform.tfstate"
   }
 }
 
@@ -56,7 +56,7 @@ resource "random_id" "suffix" {
 
 # Local values
 locals {
-  environment = "production"
+  environment = "poc"
   location    = "centralindia"
   rg_name     = "rg-quote-app-prod"
   

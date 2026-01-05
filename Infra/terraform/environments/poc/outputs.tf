@@ -11,79 +11,61 @@ output "resource_group_location" {
 output "aks_cluster_name" {
   value       = module.aks.cluster_name
   description = "AKS cluster name"
-  sensitive   = false
 }
 
 output "aks_cluster_id" {
   value       = module.aks.cluster_id
   description = "AKS cluster ID"
-  sensitive   = false
-}
-
-output "aks_kube_config" {
-  value       = module.aks.kube_config
-  description = "Kubernetes configuration"
-  sensitive   = true
 }
 
 output "acr_name" {
   value       = module.acr.name
   description = "ACR name"
-  sensitive   = false
 }
 
 output "acr_login_server" {
   value       = module.acr.login_server
   description = "ACR login server URL"
-  sensitive   = false
 }
 
-output "sql_server_fqdn" {
-  value       = module.sql.fqdn
-  description = "SQL Server FQDN"
-  sensitive   = false
+output "sql_server_id" {
+  value       = module.sql.server_id
+  description = "SQL Server ID"
 }
 
-output "sql_database_name" {
-  value       = module.sql.database_name
-  description = "SQL database name"
-  sensitive   = false
+output "sql_database_id" {
+  value       = module.sql.database_id
+  description = "SQL Database ID"
 }
 
 output "app_gateway_public_ip" {
   value       = module.app_gateway.public_ip_address
   description = "Application Gateway public IP address"
-  sensitive   = false
 }
 
-output "app_gateway_fqdn" {
-  value       = module.app_gateway.fqdn
-  description = "Application Gateway FQDN"
-  sensitive   = false
-}
-
-output "key_vault_name" {
-  value       = module.key_vault.name
-  description = "Key Vault name"
-  sensitive   = false
+output "app_gateway_id" {
+  value       = module.app_gateway.id
+  description = "Application Gateway ID"
 }
 
 output "key_vault_id" {
   value       = module.key_vault.id
   description = "Key Vault ID"
-  sensitive   = false
+}
+
+output "key_vault_uri" {
+  value       = module.key_vault.vault_uri
+  description = "Key Vault URI"
 }
 
 output "vnet_name" {
   value       = module.networking.vnet_name
   description = "Virtual Network name"
-  sensitive   = false
 }
 
 output "vnet_id" {
   value       = module.networking.vnet_id
   description = "Virtual Network ID"
-  sensitive   = false
 }
 
 output "subnet_ids" {
