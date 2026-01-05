@@ -156,7 +156,7 @@ graph TD
     UPDATE_TAG -->|H. Updates| HELM_CHART
     
     %% ArgoCD Flow
-    HELM_CHART -->|I. Watched by Argocd (https://quoteapp.centralindia.cloudapp.azure.com/argocd)| ARGOCD_WATCHER
+    HELM_CHART -->|I. Watched by Argocd https://quoteapp.centralindia.cloudapp.azure.com/argocd| ARGOCD_WATCHER
     ARGOCD_WATCHER -->|J. Auto-syncs| ARGOCD_SYNC
     ARGOCD_SYNC -->|K. Deploys| PROD_APP
 ```
