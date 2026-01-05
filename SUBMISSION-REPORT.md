@@ -195,7 +195,7 @@ graph TD
 
 2. **Application Pipeline** (`/app/` folder):
        
-    - Merge -> Quote image is built and uploaded to ACR 
+    - Merge -> Quote image is built and uploaded to ACR, also image tag is updated in the values.yaml file
     - ArgoCD monitors Git repository
     - Auto-sync if the /app folder data is updated
     - Health checks prevent bad deployments
@@ -206,7 +206,7 @@ graph TD
 
 ### Application URL's
 
-Quote web app - https://quoteapp.centralindia.cloudapp.azure.com/quote
+Quote web app - https://quoteapp.centralindia.cloudapp.azure.com/quote  
 Argocd        - https://quoteapp.centralindia.cloudapp.azure.com/argocd
 
 ### Conclusion
