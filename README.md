@@ -80,9 +80,9 @@ graph TB
 - ✅ Managed identity authentication
 - ✅ Health monitoring at every layer
 
-### Application Url's
-web application - https://quoteapp.centralindia.cloudapp.azure.com/quote
-Adgocd - https://quoteapp.centralindia.cloudapp.azure.com/argocd
+### Application Url's 
+ - web application : https://quoteapp.centralindia.cloudapp.azure.com/quote
+ - Argocd : https://quoteapp.centralindia.cloudapp.azure.com/argocd
 
 ## Complete CI/CD Pipeline with Terraform & ArgoCD
 
