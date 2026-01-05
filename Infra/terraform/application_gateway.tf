@@ -31,7 +31,7 @@ resource "azurerm_application_gateway" "appgw" {
   sku {
     name     = "WAF_v2"
     tier     = "WAF_v2"
-    capacity = 2  # Minimum for HA
+#    capacity = 2  # Minimum for HA
   }
 
   # ✅ CRITICAL: ADD AUTO-SCALING
