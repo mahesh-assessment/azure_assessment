@@ -141,13 +141,13 @@ echo "  AZURE_SUBSCRIPTION_ID  = $SUB_ID"
 echo "  AZURE_TENANT_ID        = $TENANT_ID"
 echo
 
-echo "Logging into GitHub CLI..."
-gh auth login
+#echo "Logging into GitHub CLI..."
+#gh auth login
 
-gh secret set AZURE_CLIENT_ID        -b"$APP_ID"  --repo "$REPO"
-gh secret set AZURE_SUBSCRIPTION_ID  -b"$SUB_ID"  --repo "$REPO"
-gh secret set AZURE_TENANT_ID        -b"$TENANT_ID" --repo "$REPO"
+#gh secret set AZURE_CLIENT_ID        -b"$APP_ID"  --repo "$REPO"
+#gh secret set AZURE_SUBSCRIPTION_ID  -b"$SUB_ID"  --repo "$REPO"
+#gh secret set AZURE_TENANT_ID        -b"$TENANT_ID" --repo "$REPO"
 
-echo
+#echo
 echo "OIDC setup completed successfully!"
 
