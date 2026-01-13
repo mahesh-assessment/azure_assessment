@@ -2,7 +2,7 @@
 replicaCount: 2
 
 image:
-  repository: quoteacr60b19794.azurecr.io/quote-app
+  repository: quoteacr4a409b0a.azurecr.io/quote-app
   tag: "856fee91c635a88ff34ea80f1708889d4bd281ee"
   pullPolicy: Always
 
@@ -19,7 +19,6 @@ ingress:
   enabled: true
   className: nginx
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /$2
     nginx.ingress.kubernetes.io/use-regex: "true"
   paths:
     - path: /quote
@@ -39,7 +38,7 @@ autoscaling:
   enabled: false
 
 database:
-  sqlServer: "sql-quote-60b19794.privatelink.database.windows.net"
+  sqlServer: "sql-quote-4a409b0a.privatelink.database.windows.net"
   sqlDatabase: "quotedb"
 
 env:
