@@ -121,6 +121,7 @@ fi
 echo "Creating Federated Identity Credentials..."
 echo
 
+export REPO
 for FIC in $(envsubst < "$FICS_FILE" | jq -c '.[]'); do
     SUBJECT=$(jq -r '.subject' <<< "$FIC")
     echo "Creating FIC with subject: $SUBJECT"
