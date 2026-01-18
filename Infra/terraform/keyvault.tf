@@ -1,25 +1,25 @@
 ############################################
 # Client / Tenant Info
 ############################################
-# Used to identify the GitHub OIDC / Terraform identity
 data "azurerm_client_config" "current" {}
 
 ############################################
-# Reference EXISTING (Central) Key Vault
+# Reference EXISTING Key Vault (RBAC-enabled)
 ############################################
-# This Key Vault already exists and stores shared / infra secrets
 data "azurerm_key_vault" "secrets" {
   name                = "kv-quote-app-vault1"
   resource_group_name = "rg-tfstate-vault"
 }
 
 ############################################
+# Read secrets using RBAC
+############################################
 data "azurerm_key_vault_secret" "appgw_certificate_base64" {
   name         = "appgw-certificate-base64"
   key_vault_id = data.azurerm_key_vault.secrets.id
 
   depends_on = [
-    azurerm_key_vault_access_policy.terraform_read
+    azurerm_role_assignment.kv_secrets_user
   ]
 }
 
@@ -28,7 +28,7 @@ data "azurerm_key_vault_secret" "appgw_cert_password" {
   key_vault_id = data.azurerm_key_vault.secrets.id
 
   depends_on = [
-    azurerm_key_vault_access_policy.terraform_read
+    azurerm_role_assignment.kv_secrets_user
   ]
 }
 
@@ -37,7 +37,7 @@ data "azurerm_key_vault_secret" "sql_admin_password" {
   key_vault_id = data.azurerm_key_vault.secrets.id
 
   depends_on = [
-    azurerm_key_vault_access_policy.terraform_read
+    azurerm_role_assignment.kv_secrets_user
   ]
 }
 
