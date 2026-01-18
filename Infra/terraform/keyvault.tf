@@ -14,19 +14,6 @@ data "azurerm_key_vault" "secrets" {
 }
 
 ############################################
-resource "azurerm_key_vault_access_policy" "terraform_read" {
-  key_vault_id = data.azurerm_key_vault.secrets.id
-
-  tenant_id = data.azurerm_client_config.current.tenant_id
-  object_id = data.azurerm_client_config.current.object_id
-
-  secret_permissions = [
-    "Get",
-    "List"
-  ]
-}
-
-############################################
 data "azurerm_key_vault_secret" "appgw_certificate_base64" {
   name         = "appgw-certificate-base64"
   key_vault_id = data.azurerm_key_vault.secrets.id
