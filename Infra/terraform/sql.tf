@@ -6,10 +6,6 @@ resource "azurerm_mssql_server" "sql" {
   location            = azurerm_resource_group.rg.location
   version             = "12.0"
 
-  # SQL admin credentials from Key Vault (randomly generated)
-  administrator_login          = "sqladminuser"
-  administrator_login_password = data.azurerm_key_vault_secret.sql_admin_password.value
-
   # SECURITY: Disable public access
   public_network_access_enabled = false
 
