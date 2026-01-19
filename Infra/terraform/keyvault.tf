@@ -41,3 +41,8 @@ data "azurerm_key_vault_secret" "sql_admin_password" {
   ]
 }
 
+data "azurerm_key_vault_secret" "jumpbox_ssh_key" {
+  name         = "jumpbox-ssh-pubkey"
+  key_vault_id = data.azurerm_key_vault.secrets.id
+}
+
