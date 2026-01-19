@@ -14,7 +14,7 @@
 
 | Requirement | Status | Evidence |
 |-------------|--------|----------|
-| **Public web application** | ✅ Exceeded | Live URL: https://quoteapp.centralindia.cloudapp.azure.com/quote |
+| **Public web application** | ✅ Exceeded | Live URL: https://quoteapp1.centralindia.cloudapp.azure.com/quote |
 | **Azure SQL Database connection** | ✅ Enhanced | Database accessible with in the private network |
 | **Seeded with famous quotes** | ✅ random quotes seeded |
 | **Display random quotes** | ✅ Optimized | <100ms response time|
@@ -66,7 +66,7 @@ graph TB
     ACR[Azure Container Registry]:::azure
     
     %% Connections
-    INTERNET -- "HTTPS<br/>https://quoteapp.centralindia.cloudapp.azure.com/quote" --> AGW
+    INTERNET -- "HTTPS<br/>https://quoteapp1.centralindia.cloudapp.azure.com/quote" --> AGW
     AGW -- "Internal HTTP<br/>Port 80" --> LB
     
     %% Health Probe Flow (CORRECTED)
@@ -182,7 +182,7 @@ graph TD
     UPDATE_TAG -->|H. Updates| HELM_CHART
     
     %% ArgoCD Flow
-    HELM_CHART -->|I. Watched by Argocd https://quoteapp.centralindia.cloudapp.azure.com/argocd| ARGOCD_WATCHER
+    HELM_CHART -->|I. Watched by Argocd https://quoteapp1.centralindia.cloudapp.azure.com/argocd| ARGOCD_WATCHER
     ARGOCD_WATCHER -->|J. Auto-syncs| ARGOCD_SYNC
     ARGOCD_SYNC -->|K. Deploys| PROD_APP
 ```
@@ -206,8 +206,8 @@ graph TD
 
 ### Application URL's
 
-Quote web app - https://quoteapp.centralindia.cloudapp.azure.com/quote  
-Argocd        - https://quoteapp.centralindia.cloudapp.azure.com/argocd
+Quote web app - https://quoteapp1.centralindia.cloudapp.azure.com/quote  
+Argocd        - https://quoteapp1.centralindia.cloudapp.azure.com/argocd
 
 ### Conclusion
 

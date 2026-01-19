@@ -69,7 +69,7 @@ resource "azurerm_application_gateway" "appgw" {
     cookie_based_affinity = "Disabled"
     request_timeout       = 30
     probe_name            = "nginx-probe"
-    host_name             = "quoteapp.centralindia.cloudapp.azure.com"
+    host_name             = "quoteapp1.centralindia.cloudapp.azure.com"
     
     # ✅ ADD CONNECTION DRAINING
     connection_draining {
@@ -82,7 +82,7 @@ resource "azurerm_application_gateway" "appgw" {
     name                = "nginx-probe"
     protocol            = "Http"
     path                = "/healthz"
-    host                = "quoteapp.centralindia.cloudapp.azure.com"
+    host                = "quoteapp1.centralindia.cloudapp.azure.com"
     interval            = 30
     timeout             = 30
     unhealthy_threshold = 3
@@ -98,7 +98,7 @@ resource "azurerm_application_gateway" "appgw" {
     name                = "app-health-probe"
     protocol            = "Http"
     path                = "/health"
-    host                = "quoteapp.centralindia.cloudapp.azure.com"
+    host                = "quoteapp1.centralindia.cloudapp.azure.com"
     interval            = 60
     timeout             = 30
     unhealthy_threshold = 2
@@ -110,7 +110,7 @@ resource "azurerm_application_gateway" "appgw" {
     frontend_port_name             = "https-port"
     protocol                       = "Https"
     ssl_certificate_name           = "appgw-cert"
-    host_name                      = "quoteapp.centralindia.cloudapp.azure.com"
+    host_name                      = "quoteapp1.centralindia.cloudapp.azure.com"
     require_sni                    = true
   }
 
